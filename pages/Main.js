@@ -4,6 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'r
 const Main = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [editIndex, setEditIndex] = useState(-1);
 
   const handleAddTask = () => {
     if (task.trim() === '') return;
@@ -15,18 +16,43 @@ const Main = () => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
-  const renderTask = ({ item }) => (
+  const handleEditTask = (index, newText) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index].text = newText;
+    setTasks(updatedTasks);
+    setEditIndex(-1);
+  };
+
+  const renderTask = ({ item, index }) => (
     <View style={styles.taskItem}>
-      <Text>{item.text}</Text>
-      <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
-        <Text style={styles.deleteButton}>Delete</Text>
-      </TouchableOpacity>
+      {editIndex !== index ? (
+        <View style={styles.taskContainer}>
+          <Text style={styles.taskText}>{item.text}</Text>
+        </View>
+      ) : (
+        <TextInput
+          style={[styles.taskText, styles.editTaskText]}
+          value={item.text}
+          onChangeText={text => handleEditTask(index, text)}
+          autoFocus
+          onBlur={() => setEditIndex(-1)}
+          selection={{ start: item.text.length, end: item.text.length }} // Set cursor at the end of text
+        />
+      )}
+      <View style={styles.taskButtons}>
+        <TouchableOpacity onPress={() => setEditIndex(index)}>
+          <Text style={styles.taskButton}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
+          <Text style={styles.taskButton}>Delete</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Task Management</Text>
+      <Text style={styles.title}>Task Manager</Text>
       <TextInput
         style={styles.input}
         value={task}
@@ -34,7 +60,7 @@ const Main = () => {
         placeholder="Enter task"
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
-        <Text style={styles.addButtonText}>Add Task</Text>
+        <Text style={styles.addButtonLabel}>Add Task</Text>
       </TouchableOpacity>
       <FlatList
         data={tasks}
@@ -50,8 +76,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
   },
   title: {
@@ -71,14 +95,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
+    alignItems: 'center',
   },
-  addButtonText: {
+  addButtonLabel: {
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   taskList: {
-    width: '100%',
     marginTop: 20,
   },
   taskItem: {
@@ -86,13 +109,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+    marginBottom: 10,
+  },
+  taskContainer: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    marginBottom: 10,
+    padding: 10,
   },
-  deleteButton: {
-    color: 'red',
+  taskText: {
+    flex: 1,
+  },
+  editTaskText: {
+    borderWidth: 1,
+    borderColor: 'blue',
+    borderRadius: 5,
+    padding: 5,
+  },
+  taskButtons: {
+    flexDirection: 'row',
+  },
+  taskButton: {
+    padding: 5,
+    marginLeft: 5,
+    borderRadius: 5,
+    backgroundColor: '#ccc',
   },
 });
 
