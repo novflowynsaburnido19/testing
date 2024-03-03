@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons'; // Import Feather icons from Expo vector icons library
 
 const Main = () => {
   const [task, setTask] = useState('');
@@ -41,10 +42,10 @@ const Main = () => {
       )}
       <View style={styles.taskButtons}>
         <TouchableOpacity onPress={() => setEditIndex(index)}>
-          <Text style={styles.taskButton}>Edit</Text>
+          <Feather name="edit" size={20} color="#fff" style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
-          <Text style={styles.taskButton}>Delete</Text>
+          <Feather name="trash-2" size={20} color="#fff" style={[styles.icon, styles.deleteIcon]} />
         </TouchableOpacity>
       </View>
     </View>
@@ -76,12 +77,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f0f0',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 15,
+    marginTop: 25,
+    textAlign: 'center',
   },
   input: {
     width: '100%',
@@ -90,10 +93,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    backgroundColor: '#fff',
   },
   addButton: {
-    backgroundColor: 'blue',
-    padding: 10,
+    backgroundColor: '#84dcc6',
+    padding: 15,
     borderRadius: 5,
     alignItems: 'center',
   },
@@ -108,18 +112,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
     marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
   taskContainer: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
   },
   taskText: {
-    flex: 1,
+    fontSize: 16,
   },
   editTaskText: {
     borderWidth: 1,
@@ -130,11 +132,14 @@ const styles = StyleSheet.create({
   taskButtons: {
     flexDirection: 'row',
   },
-  taskButton: {
-    padding: 5,
-    marginLeft: 5,
+  icon: {
+    padding: 10,
     borderRadius: 5,
-    backgroundColor: '#ccc',
+    backgroundColor: '#ff686b',
+    marginLeft: 5, 
+  },
+  deleteIcon: {
+    marginLeft: 10, 
   },
 });
 
