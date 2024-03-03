@@ -37,7 +37,7 @@ const Main = () => {
           onChangeText={text => handleEditTask(index, text)}
           autoFocus
           onBlur={() => setEditIndex(-1)}
-          selection={{ start: item.text.length, end: item.text.length }} // Set cursor at the end of text
+          selection={{ start: item.text.length, end: item.text.length }}
         />
       )}
       <View style={styles.taskButtons}>
@@ -122,12 +122,6 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontSize: 16,
-  },
-  editTaskText: {
-    borderWidth: 1,
-    borderColor: 'blue',
-    borderRadius: 5,
-    padding: 5,
   },
   taskButtons: {
     flexDirection: 'row',
