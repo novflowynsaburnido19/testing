@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons'; // Import Feather icons from Expo vector icons library
+import { Feather } from '@expo/vector-icons'; 
 
 const Main = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
+  const [editedTask, setEditedTask] = useState('');
 
   const handleAddTask = () => {
     if (task.trim() === '') return;
@@ -17,33 +18,42 @@ const Main = () => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
-  const handleEditTask = (index, newText) => {
+  const handleEditTask = index => {
+    setEditIndex(index);
+    setEditedTask(tasks[index].text);
+  };
+
+  const handleSaveEdit = () => {
     const updatedTasks = [...tasks];
-    updatedTasks[index].text = newText;
+    updatedTasks[editIndex].text = editedTask;
     setTasks(updatedTasks);
     setEditIndex(-1);
   };
 
   const renderTask = ({ item, index }) => (
     <View style={styles.taskItem}>
-      {editIndex !== index ? (
-        <View style={styles.taskContainer}>
+      <View style={styles.taskContainer}>
+        {editIndex === index ? (
+          <TextInput
+            style={styles.input}
+            value={editedTask}
+            onChangeText={text => setEditedTask(text)}
+            onBlur={handleSaveEdit}
+          />
+        ) : (
           <Text style={styles.taskText}>{item.text}</Text>
-        </View>
-      ) : (
-        <TextInput
-          style={[styles.taskText, styles.editTaskText]}
-          value={item.text}
-          onChangeText={text => handleEditTask(index, text)}
-          autoFocus
-          onBlur={() => setEditIndex(-1)}
-          selection={{ start: item.text.length, end: item.text.length }}
-        />
-      )}
+        )}
+      </View>
       <View style={styles.taskButtons}>
-        <TouchableOpacity onPress={() => setEditIndex(index)}>
-          <Feather name="edit" size={20} color="#fff" style={styles.icon} />
-        </TouchableOpacity>
+        {editIndex !== index ? (
+          <TouchableOpacity onPress={() => handleEditTask(index)}>
+            <Feather name="edit" size={20} color="#fff" style={[styles.icon, styles.editIcon]} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => handleSaveEdit()}>
+            <Feather name="check" size={20} color="#fff" style={[styles.icon, styles.editIcon]} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
           <Feather name="trash-2" size={20} color="#fff" style={[styles.icon, styles.deleteIcon]} />
         </TouchableOpacity>
@@ -131,6 +141,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#ff686b',
     marginLeft: 5, 
+  },
+  editIcon: {
+    marginLeft: 10, 
   },
   deleteIcon: {
     marginLeft: 10, 
